@@ -1,0 +1,45 @@
+:root {
+    --primary-color: #0D1A63;
+    --secondary-color: #1A2CA3;
+    --accent-color: #F59E0B;
+    --search-color: #2845D6;
+}
+
+
+.table, .table th, .table td {
+    border: 1px solid var(--secondary-color);
+}
+
+.table thead th {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+.btn.btn-biru {
+    background-color: var(--search-color);
+    border-color: var(--search-color); 
+    color: white;
+}
+
+.btn.btn-biru:hover {
+    background-color: #2e3e8d;
+    border-color: #2e3e8d;
+    color: white; 
+}
+
+.bg-blue {
+    background-color: var(--primary-color);
+}
+
+.navbar .nav-link.active{
+    background-color: var(--accent-color);
+    color: black !important;
+}
+
+.nav-link.active:hover {
+    background-color: #bf8520;
+}
+
+.btn-orange {
+    background-color: var(--accent-color) !important;
+}
