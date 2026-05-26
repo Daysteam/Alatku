@@ -55,7 +55,7 @@
                     </div>
                     <div class="mb-3">
                         <label for="alasan" class="form-label">Alasan</label>
-                        <textarea name="alasan" class="form-control" id="alasan" placeholder="Alasan.." value="{{ old('alasan', $peminjaman->alasan) }}"></textarea>
+                        <textarea name="alasan" class="form-control" id="alasan" placeholder="Alasan..">{{ old('alasan', $peminjaman->alasan) }}</textarea>
                     </div>
                     <div class="d-flex justify-content-end">
                         <button class="btn btn-biru">Update</button>
