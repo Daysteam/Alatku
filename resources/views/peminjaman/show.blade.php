@@ -36,7 +36,7 @@
                             <td>{{ $peminjaman->user->nama }}</td>
                             <td>{{ $peminjaman->barang->nama_barang }}</td>
                             <td>{{ $peminjaman->tanggal_pinjam }}</td>
-                            <td>{{ $peminjaman->tanggal_kembali }}</td>
+                            <td>{{ $peminjaman->tanggal_kembali ?? '-' }}</td>
                             <td>
                                 <span class="
                                 @if ($peminjaman->status === 'kembali')

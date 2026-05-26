@@ -47,7 +47,7 @@ class BarangController extends Controller
         try{
             $validated = $request->validate([
                 'nama_barang' => 'required|string',
-                'kode_barang' => 'required|integer',
+                'kode_barang' => 'required|string|unique:barangs,kode_barang',
                 'kategori_id' => 'required|exists:kategoris,id',
                 'lokasi_id' => 'required|exists:lokasis,id',
                 'jumlah' => 'required|min:1|numeric',
@@ -89,7 +89,7 @@ class BarangController extends Controller
         try{
             $validated = $request->validate([
                 'nama_barang' => 'required|string',
-                'kode_barang' => 'required|integer',
+                'kode_barang' => 'required|string|unique:barangs,kode_barang,' . $barang->id . ',id',
                 'kategori_id' => 'required|exists:kategoris,id',
                 'lokasi_id' => 'required|exists:lokasis,id',
                 'jumlah' => 'required|min:1|numeric',

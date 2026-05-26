@@ -4,7 +4,7 @@
 
 @section('content')
 
-    <h2 class="mt-2 mb-3">Peminjaman Inventaris</h2>
+    <h2 class="mt-2 mb-3 text-sm-center">Peminjaman Inventaris</h2>
     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-stretch align-items-sm-center mb-3">
         <a href="{{ route('peminjaman.create') }}" class="btn btn-success mb-1 mb-md-0">
             + Tambah

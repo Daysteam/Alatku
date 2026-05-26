@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('kategori_id')->constrained()->cascadeOnDelete();
             $table->foreignId('lokasi_id')->constrained()->cascadeOnDelete();
             $table->string('nama_barang');
-            $table->string('kode_barang');
+            $table->string('kode_barang')->unique();
             $table->integer('jumlah');
             $table->enum('kondisi',['baik','rusak','perbaikan']);;
             $table->timestamps();

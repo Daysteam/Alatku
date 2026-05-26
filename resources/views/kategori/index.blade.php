@@ -4,7 +4,7 @@
 
 @section('content')
 
-    <h2 class="mt-2 mb-3 text-start text-md-center">Kategori Inventaris</h2>
+    <h2 class="mt-2 mb-3 text-sm-center">Kategori Inventaris</h2>
     <div class="d-flex flex-column flex-sm-row justify-content-between align-items-stretch align-items-sm-center mb-3">
         <a href="{{ route('kategori.create') }}" class="btn btn-success mb-1 mb-md-0">
             + Tambah
