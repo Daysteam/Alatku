@@ -15,7 +15,7 @@ class BarangController extends Controller
      */
     public function index(Request $request)
     {
-        try{
+       try{
             $barangs = Barang::with(['kategori','lokasi'])
             ->when($request->search, function ($query) use ($request){
                 $query->where('nama_barang', 'LIKE' , '%' . $request->search . '%');

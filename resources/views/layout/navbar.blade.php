@@ -1,6 +1,6 @@
 <nav class="navbar navbar-dark bg-blue navbar-expand-lg px-3 sticky-top">
 
-    <a class="navbar-brand d-flex align-items-center" href="#">
+    <a class="navbar-brand d-flex align-items-center" href="{{ route('barang.index') }}">
         <img src="{{ asset('images/logo.png') }}" width="40" height="40" class="me-2">
         <strong>Alatku</strong>
     </a>
