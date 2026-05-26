@@ -13,17 +13,12 @@ class KategoriController extends Controller
      */
     public function index(Request $request)
     {
-        try{
-            $kategoris = Kategori::when($request->search, function ($query) use ($request){
-                $query->where('nama_kategori', 'LIKE' , '%' . $request->search . '%');
-            })
-            ->latest()
-            ->paginate(5);
-            return view('kategori.index', compact('kategoris'));
-        }catch(\Exception $e){
-            return back()->withInput()
-            ->with('error', [$e->getMessage()]);
-        }
+        $kategoris = Kategori::when($request->search, function ($query) use ($request){
+            $query->where('nama_kategori', 'LIKE' , '%' . $request->search . '%');
+        })
+        ->latest()
+        ->paginate(5);
+        return view('kategori.index', compact('kategoris'));
     }
 
     /**
@@ -39,18 +34,14 @@ class KategoriController extends Controller
      */
     public function store(Request $request)
     {
-        try{
-            $validated = $request->validate([
-                'nama_kategori' => 'required|string|unique:kategoris,nama_kategori'
-            ]);
+        $validated = $request->validate([
+            'nama_kategori' => 'required|string|unique:kategoris,nama_kategori'
+        ]);
             
-            Kategori::create($validated);
+        Kategori::create($validated);
 
-            return redirect()->route('kategori.index')->with('success','Berhasil Menyimpan barang');
-        }catch(\Exception $e){
-            return back()->withInput()
-            ->with('error', [$e->getMessage()]);
-        }
+        return redirect()->route('kategori.index')->with('success','Berhasil Menyimpan barang');
+        
     }
 
     /**
@@ -74,20 +65,16 @@ class KategoriController extends Controller
      */
     public function update(Request $request, Kategori $kategori)
     {
-        try{
-            $validated = $request->validate([
-                'nama_kategori' => ['required',
-                    'string',
-                    Rule::unique('kategoris','nama_kategori')->ignore($kategori->id)]
-            ]);
+        $validated = $request->validate([
+            'nama_kategori' => ['required',
+                'string',
+                Rule::unique('kategoris','nama_kategori')->ignore($kategori->id)]
+        ]);
 
-            $kategori->update($validated);
+        $kategori->update($validated);
 
-            return redirect()->route('kategori.index')->with('success','Berhasil update barang');
-        }catch(\Exception $e){
-            return back()->withInput()
-            ->with('error', [$e->getMessage()]);
-        }
+        return redirect()->route('kategori.index')->with('success','Berhasil update barang');
+        
     }
 
     /**
@@ -95,13 +82,8 @@ class KategoriController extends Controller
      */
     public function destroy(Kategori $kategori)
     {
-        try{
-            $kategori->delete();
+        $kategori->delete();
 
-            return redirect()->route('kategori.index')->with('success','Berhasil hapus barang');
-        }catch(\Exception $e){
-            return back()->withInput()
-            ->with('error', [$e->getMessage()]);
-        }
+        return redirect()->route('kategori.index')->with('success','Berhasil hapus barang');    
     }
 }

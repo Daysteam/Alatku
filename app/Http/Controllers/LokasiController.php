@@ -12,18 +12,14 @@ class LokasiController extends Controller
      */
     public function index(Request $request)
     {
-        try{
-            $lokasis = Lokasi::when($request->search, function ($query) use ($request) {
-                $query->where('nama_lokasi', 'LIKE', '%' . $request->search . '%');
-            })
-            ->latest()
-            ->paginate(5);
+        
+        $lokasis = Lokasi::when($request->search, function ($query) use ($request) {
+            $query->where('nama_lokasi', 'LIKE', '%' . $request->search . '%');
+        })
+        ->latest()
+        ->paginate(5);
 
-            return view('lokasi.index', compact('lokasis'));
-        }catch(\Exception $e){
-            return back()->withInput()
-            ->with('error', [$e->getMessage()]);
-        }
+        return view('lokasi.index', compact('lokasis'));
     }
 
     /**
@@ -39,18 +35,14 @@ class LokasiController extends Controller
      */
     public function store(Request $request)
     {
-        try{
-            $validated = $request->validate([
-                'nama_lokasi' => 'required|string|unique:lokasis,nama_lokasi'
-            ]);
+        
+        $validated = $request->validate([
+            'nama_lokasi' => 'required|string|unique:lokasis,nama_lokasi'
+        ]);
 
-            Lokasi::create($validated);
+        Lokasi::create($validated);
 
-            return redirect()->route('lokasi.index')->with('success','Berhasiil menambahkan data');
-        }catch(\Exception $e){
-            return back()->withInput()
-            ->with('error', [$e->getMessage()]);
-        }
+        return redirect()->route('lokasi.index')->with('success','Berhasiil menambahkan data');
     }
 
     /**
@@ -74,18 +66,13 @@ class LokasiController extends Controller
      */
     public function update(Request $request, Lokasi $lokasi)
     {
-        try{
-            $validated = $request->validate([
-                'nama_lokasi' => 'required|string|unique:lokasis,nama_lokasi,' . $lokasi->id ,',id'
-            ]);
+        $validated = $request->validate([
+            'nama_lokasi' => 'required|string|unique:lokasis,nama_lokasi,' . $lokasi->id ,',id'
+        ]);
 
-            $lokasi->update($validated);
+        $lokasi->update($validated);
 
-            return redirect()->route('lokasi.index')->with('success','Berhasiil mengupdate data');
-        }catch(\Exception $e){
-            return back()->withInput()
-            ->with('error', [$e->getMessage()]);
-        }
+        return redirect()->route('lokasi.index')->with('success','Berhasiil mengupdate data');
     }
 
     /**
@@ -93,13 +80,7 @@ class LokasiController extends Controller
      */
     public function destroy(Lokasi $lokasi)
     {
-        try{
-            $lokasi->delete();
-
-            return redirect()->route('lokasi.index')->with('success','Berhasiil menghapus data');
-        }catch(\Exception $e){
-            return back()->withInput()
-            ->with('error', [$e->getMessage()]);
-        }
+        $lokasi->delete();
+        return redirect()->route('lokasi.index')->with('success','Berhasiil menghapus data');
     }
 }

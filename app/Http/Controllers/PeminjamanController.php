@@ -14,20 +14,15 @@ class PeminjamanController extends Controller
      */
     public function index(Request $request)
     {
-        try {
-            $peminjamans = Peminjaman::with(['barang','user'])
-            ->when($request->search, function ($query) use ($request){
-                $query->whereHas('user', function ($q) use ($request) {
-                    $q->where('nama', 'LIKE', '%' . $request->search . '%');
-                });
-            })
-            ->latest()
-            ->paginate(5);
-            return view('peminjaman.index', compact('peminjamans'));
-        }catch(\Exception $e) {
-            return back()->withInput()
-            ->with('error', [$e->getMessage()]);
-        }
+        $peminjamans = Peminjaman::with(['barang','user'])
+        ->when($request->search, function ($query) use ($request){
+            $query->whereHas('user', function ($q) use ($request) {
+                $q->where('nama', 'LIKE', '%' . $request->search . '%');
+            });
+        })
+        ->latest()
+        ->paginate(5);
+        return view('peminjaman.index', compact('peminjamans'));
     }
 
     /**
@@ -45,42 +40,37 @@ class PeminjamanController extends Controller
      */
     public function store(Request $request)
     {
-        try {
-            $validated = $request->validate([
-                'barang_id' => 'required|exists:barangs,id',
-                'user_id' => 'required|exists:users,id',
-                'tanggal_pinjam' => 'required|date|before_or_equal:today',
-                'tanggal_kembali' => 'nullable|date|before_or_equal:today',
-                'status' => 'required|in:kembali,pinjam',
-                'jumlah' => 'required|numeric|min:1',
-                'alasan' => 'nullable|string'
-            ]);
+        $validated = $request->validate([
+            'barang_id' => 'required|exists:barangs,id',
+            'user_id' => 'required|exists:users,id',
+            'tanggal_pinjam' => 'required|date|before_or_equal:today',
+            'tanggal_kembali' => 'nullable|date|before_or_equal:today',
+            'status' => 'required|in:kembali,pinjam',
+            'jumlah' => 'required|numeric|min:1',
+            'alasan' => 'nullable|string'
+        ]);
             
-            $diPinjam = $validated['status'];
-            $barang = Barang::where('id', $validated['barang_id'])->first();
-            $jumlah = $barang->jumlah;
-            $jumlahPeminjaman = $validated['jumlah'];
-            if($diPinjam === 'pinjam') {
-                if($jumlah >= $jumlahPeminjaman) {
-                    $barang->jumlah = $jumlah - $jumlahPeminjaman;
-                    $barang->save();
-                } else{
-                    return back()->withInput()->with('error',['Jumlah barang tidak mencukupi']);
-                }
-            } else {
-                if($jumlahPeminjaman > $jumlah){
-                    return back()->withInput()->with('error',['Stok tidak mencukupi']);
-                }
+        $diPinjam = $validated['status'];
+        $barang = Barang::where('id', $validated['barang_id'])->first();
+        $jumlah = $barang->jumlah;
+        $jumlahPeminjaman = $validated['jumlah'];
+        if($diPinjam === 'pinjam') {
+            if($jumlah >= $jumlahPeminjaman) {
+                $barang->jumlah = $jumlah - $jumlahPeminjaman;
+                $barang->save();
+            } else{
+                return back()->withInput()->with('error',['Jumlah barang tidak mencukupi']);
             }
+        } else {
+            if($jumlahPeminjaman > $jumlah){
+                return back()->withInput()->with('error',['Stok tidak mencukupi']);
+            }
+        }
 
-            Peminjaman::create($validated);
+        Peminjaman::create($validated);
 
-            return redirect()->route('peminjaman.index')
-            ->with('success','Berhasil menyimpan peminjaman');
-        }catch(\Exception $e) {
-            return back()->withInput()
-            ->with('error', [$e->getMessage()]);
-        }   
+        return redirect()->route('peminjaman.index')
+        ->with('success','Berhasil menyimpan peminjaman');   
     }
 
     /**
@@ -107,47 +97,43 @@ class PeminjamanController extends Controller
      */
     public function update(Request $request, Peminjaman $peminjaman)
     {
-        try {
-            $validated = $request->validate([
-                'barang_id' => 'required|exists:barangs,id',
-                'user_id' => 'required|exists:users,id',
-                'tanggal_pinjam' => 'required|date|before_or_equal:today',
-                'tanggal_kembali' => 'nullable|date|before_or_equal:tanggal_pinjam',
-                'status' => 'required|in:kembali,pinjam',
-                'jumlah' => 'required|integer|min:1',
-                'alasan' => 'nullable|string'
-            ]);
+        
+        $validated = $request->validate([
+            'barang_id' => 'required|exists:barangs,id',
+            'user_id' => 'required|exists:users,id',
+            'tanggal_pinjam' => 'required|date|before_or_equal:today',
+            'tanggal_kembali' => 'nullable|date|before_or_equal:tanggal_pinjam',
+            'status' => 'required|in:kembali,pinjam',
+            'jumlah' => 'required|integer|min:1',
+            'alasan' => 'nullable|string'
+        ]);
             
-            $diPinjam = $validated['status'];
-            $barang = Barang::where('id',$validated['barang_id'])->first();
-            $jumlahLama = $barang->jumlah + $peminjaman->jumlah;
-            $jumlahPeminjamanBaru = $validated['jumlah'];
+        $diPinjam = $validated['status'];
+        $barang = Barang::where('id',$validated['barang_id'])->first();
+        $jumlahLama = $barang->jumlah + $peminjaman->jumlah;
+        $jumlahPeminjamanBaru = $validated['jumlah'];
 
-            if($diPinjam === 'pinjam') {
+        if($diPinjam === 'pinjam') {
 
-                if($jumlahLama >= $jumlahPeminjamanBaru) {
-                    $jumlahBaru = $jumlahLama - $jumlahPeminjamanBaru;
-                    $barang->jumlah = $jumlahBaru;
-                    $barang->save();
-                } else {
-                    return back()->withInput()->with('error',['Stok barang tidak mencukupi']);
-                }
-
-                $peminjaman->update($validated);
+            if($jumlahLama >= $jumlahPeminjamanBaru) {
+                $jumlahBaru = $jumlahLama - $jumlahPeminjamanBaru;
+                $barang->jumlah = $jumlahBaru;
+                $barang->save();
             } else {
-                if($jumlahPeminjamanBaru > $jumlahLama){
-                    return back()->withInput()->with('error',['Stok tidak mencukupi']);
-                }
+                return back()->withInput()->with('error',['Stok barang tidak mencukupi']);
             }
 
             $peminjaman->update($validated);
+        } else {
+            if($jumlahPeminjamanBaru > $jumlahLama){
+                return back()->withInput()->with('error',['Stok tidak mencukupi']);
+            }
+        }
 
-            return redirect()->route('peminjaman.index')
-            ->with('success','Berhasil mengupdate peminjaman');
-        }catch(\Exception $e) {
-            return back()->withInput()
-            ->with('error', [$e->getMessage()]);
-        }   
+        $peminjaman->update($validated);
+
+        return redirect()->route('peminjaman.index')
+        ->with('success','Berhasil mengupdate peminjaman');
     }
 
     /**
@@ -155,20 +141,15 @@ class PeminjamanController extends Controller
      */
     public function destroy(Peminjaman $peminjaman)
     {
-        try {
-            if($peminjaman->status === 'pinjam'){
-                $barang = Barang::where('id',$peminjaman->barang_id);
-                $barang->jumlah = $barang->jumlah + $peminjaman->jumlah;
-                $barang->save();
-            }
+        if($peminjaman->status === 'pinjam'){
+            $barang = Barang::where('id',$peminjaman->barang_id);
+            $barang->jumlah = $barang->jumlah + $peminjaman->jumlah;
+            $barang->save();
+        }
 
-            $peminjaman->delete();
+        $peminjaman->delete();
 
-            return redirect()->route('peminjaman.index')
-            ->with('success','Berhasil menghapus peminjaman');
-        }catch(\Exception $e) {
-            return back()->withInput()
-            ->with('error', [$e->getMessage()]);
-        }   
+        return redirect()->route('peminjaman.index')
+        ->with('success','Berhasil menghapus peminjaman');
     }
 }

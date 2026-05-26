@@ -15,18 +15,14 @@ class BarangController extends Controller
      */
     public function index(Request $request)
     {
-       try{
-            $barangs = Barang::with(['kategori','lokasi'])
-            ->when($request->search, function ($query) use ($request){
-                $query->where('nama_barang', 'LIKE' , '%' . $request->search . '%');
-            })
-            ->latest()
-            ->paginate(5);
-            return view('barang.index', compact('barangs'));
-        }catch(\Exception $e){
-            return back()->withInput()
-            ->with('error', [$e->getMessage()]);
-        }  
+       
+        $barangs = Barang::with(['kategori','lokasi'])
+        ->when($request->search, function ($query) use ($request){
+            $query->where('nama_barang', 'LIKE' , '%' . $request->search . '%');
+        })
+        ->latest()
+        ->paginate(5);
+        return view('barang.index', compact('barangs'));  
     }
 
     /**
@@ -44,23 +40,19 @@ class BarangController extends Controller
      */
     public function store(Request $request)
     {
-        try{
-            $validated = $request->validate([
-                'nama_barang' => 'required|string',
-                'kode_barang' => 'required|string|unique:barangs,kode_barang',
-                'kategori_id' => 'required|exists:kategoris,id',
-                'lokasi_id' => 'required|exists:lokasis,id',
-                'jumlah' => 'required|min:1|numeric',
-                'kondisi' => 'required|in:baik,rusak,perbaikan',
-            ]);
+        
+        $validated = $request->validate([
+            'nama_barang' => 'required|string',
+            'kode_barang' => 'required|string|unique:barangs,kode_barang',
+            'kategori_id' => 'required|exists:kategoris,id',
+            'lokasi_id' => 'required|exists:lokasis,id',
+            'jumlah' => 'required|min:1|numeric',
+            'kondisi' => 'required|in:baik,rusak,perbaikan',
+        ]);
 
-            Barang::create($validated);
+        Barang::create($validated);
 
-            return redirect()->route('barang.index')->with('success','Berhasil memasukan data');
-        }catch(\Exception $e){
-            return back()->withInput()
-            ->with('error', [$e->getMessage()]);
-        } 
+        return redirect()->route('barang.index')->with('success','Berhasil memasukan data');
     }
 
     /**
@@ -86,23 +78,18 @@ class BarangController extends Controller
      */
     public function update(Request $request, Barang $barang)
     {
-        try{
-            $validated = $request->validate([
-                'nama_barang' => 'required|string',
-                'kode_barang' => 'required|string|unique:barangs,kode_barang,' . $barang->id . ',id',
-                'kategori_id' => 'required|exists:kategoris,id',
-                'lokasi_id' => 'required|exists:lokasis,id',
-                'jumlah' => 'required|min:1|numeric',
-                'kondisi' => 'required|in:baik,rusak,perbaikan',
-            ]);
+        $validated = $request->validate([
+           'nama_barang' => 'required|string',
+            'kode_barang' => 'required|string|unique:barangs,kode_barang,' . $barang->id . ',id',
+            'kategori_id' => 'required|exists:kategoris,id',
+            'lokasi_id' => 'required|exists:lokasis,id',
+            'jumlah' => 'required|min:1|numeric',
+            'kondisi' => 'required|in:baik,rusak,perbaikan',
+        ]);
 
-            $barang->update($validated);
+        $barang->update($validated);
 
-            return redirect()->route('barang.index')->with('success','Berhasil mengupdate data');
-        }catch(\Exception $e){
-            return back()->withInput()
-            ->with('error', [$e->getMessage()]);
-        } 
+        return redirect()->route('barang.index')->with('success','Berhasil mengupdate data'); 
     }
 
     /**
@@ -110,13 +97,10 @@ class BarangController extends Controller
      */
     public function destroy(Barang $barang)
     {
-        try{
-            $barang->delete();
+        
+        $barang->delete();
 
-            return redirect()->route('barang.index')->with('success','Berhasil menghapus data');
-        }catch(\Exception $e){
-            return back()->withInput()
-            ->with('error', [$e->getMessage()]);
-        } 
+        return redirect()->route('barang.index')->with('success','Berhasil menghapus data');
+        
     }
 }

@@ -7,12 +7,20 @@
 
 @if (session('error'))
     <div class="alert alert-danger alert-dismissible fade show" role="alert">
-        <ul>
-            @foreach (session('error') as $error)
+        {{ session('error') }}
+        <button type="button" aria-label="close" data-bs-dismiss="alert" class="btn-close"></button>
+    </div>
+@endif
+
+@if ($errors->any())
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <ul class="mb-0">
+            @foreach ($errors->all() as $error)
                 <li>{{ $error }}</li>
             @endforeach
         </ul>
-        <button type="button" aria-label="close" data-bs-dismiss="alert" class="btn-close"></button>
+
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 @endif
 
