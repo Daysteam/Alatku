@@ -65,11 +65,11 @@ class PeminjamanController extends Controller
                     $barang->jumlah = $jumlah - $jumlahPeminjaman;
                     $barang->save();
                 } else{
-                    return back()->with('error',['Jumlah barang tidak mencukupi']);
+                    return back()->withInput()->with('error',['Jumlah barang tidak mencukupi']);
                 }
             } else {
                 if($jumlahPeminjaman > $jumlah){
-                    return back()->with('error',['Stok tidak mencukupi']);
+                    return back()->withInput()->with('error',['Stok tidak mencukupi']);
                 }
             }
 
@@ -130,13 +130,13 @@ class PeminjamanController extends Controller
                     $barang->jumlah = $jumlahBaru;
                     $barang->save();
                 } else {
-                    return back()->with('error',['Stok barang tidak mencukupi']);
+                    return back()->withInput()->with('error',['Stok barang tidak mencukupi']);
                 }
 
                 $peminjaman->update($validated);
             } else {
                 if($jumlahPeminjamanBaru > $jumlahLama){
-                    return back()->with('error',['Stok tidak mencukupi']);
+                    return back()->withInput()->with('error',['Stok tidak mencukupi']);
                 }
             }
 
