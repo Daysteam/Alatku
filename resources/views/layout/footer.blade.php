@@ -3,7 +3,7 @@
         <div class="row g-4 justify-content-between">
             
             <div class="col-12 col-lg-5">
-                <a href="" class="text-white text-decoration-none d-flex align-items-center mb-3 fw-bold fs-4">
+                <a href="#barang" class="text-white text-decoration-none d-flex align-items-center mb-3 fw-bold fs-4">
                     <img src="{{ asset('images/logo.png') }}" alt="logo" width="40px" height="40px" class="me-2">
                     Alatku
                 </a>
